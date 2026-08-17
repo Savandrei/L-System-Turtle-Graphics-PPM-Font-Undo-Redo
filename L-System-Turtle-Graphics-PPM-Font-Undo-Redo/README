@@ -1,0 +1,295 @@
+Savlovschi Andrei-BOGDAN, 311CB
+
+The main function starts by allocating variables and then scanning
+each command. Depending on the command, additional data is scanned
+(file locations, positions, pixel colors, etc.).
+At the end the resources are free'd. 
+
+Since the undo and redo commands are relatively similar, and are found
+in all the tasks, I will cover them at the end. This also includes the
+"last_cmd" function and almost every one that has the word "stack"
+in it.
+
+The program makes use of three structs: LSYSTEM, FONT and TURTLE_STATE
+which are used to save the data or the state of the program.
+
+
+Task 1: "Grafeme fractale"
+
+
+In task one, we are introduced with the first commands: LSYSTEM and DERIVE.
+
+1.1: LSYSTEM
+The lsystem function makes use of a struct with the same name, LSYSTEM (for 
+reference, all my commands are in lowercase while structs are in uppercase).
+
+The function starts by opening a file pointer to the file_location
+provided by input, and checks if the file exists.
+If it exists, it starts reading the data.
+
+At the end if in 'n'- normal mode, it will display that the command was
+successful.
+
+1.2: DERIVE
+The derive function starts by checking if the lsystem is loaded.
+If it is loaded, it allocates space for two stings. One will serve as
+the axiom and the other will be the derivation of the axiom.
+
+Each character of the axiom will be checked if it represents a symbol,
+in which case the successor of it will be added at the end of the derived
+string. If a character is not a symbol, it will be added alone to the end
+of the derived array.
+While this processes is happening, the size of the derived array is stored.
+Before it reaches the point where it is full, the array will be
+reallocated with a larger size.
+
+The last lines of code free's one of strings and returns the other.
+The output will be printed and then the last string will be free'd as well.
+
+
+
+Task 2: "Turtle graphics"
+
+
+The second task introduces 3 commands: LOAD, TURTLE and SAVE.
+
+2.1: LOAD
+Similarly to LSYSTEM command, "load" checks if the file exists.
+
+It will skip the first 3 characters ("P6\n") and start reading dimensions.
+read_dimesions transforms each digit from a char format to an int format
+and forms the width and height, until either a space or an endline is read.
+
+After that , it will read the rgb values and transform them into an int format.
+Each color represented by an int will have the value
+color = red * 256^2 + green * 256 + blue, making the rgb values occupy 1 byte
+each for a total of 3.
+The colors of the pixels are each saved into an 2d int array.
+
+The message for successful loading is displayed in the end.
+
+2.2: TURTLE
+In the beginning, the values for all the parameters of the command are scanned.
+Both the lsystem and image (load function) are checked to be loaded.
+
+From here, all the things happening are thoroughly explained in the task.
+
+Because it was never showed (at least to me, beside generic descriptions) how
+a proper readme should be made, and I didn't receive yet the manual grading
+for the second homework to know what I could do better, I will explain again
+what was already told by the task since that is what the turtle function does.
+
+I will mark this part with * in case you want to skip it.
+
+*********************************************
+
+The axiom is derived to obtain the command for the turtle function
+and TURTLE_STATE array is initialized, TURTLE_STATE being the 'S' array
+in the task. This array is present in three functions, add_state, get_state
+and remove_state. 
+
+add_state adds the turtle position and orientation to the end of the
+TURTLE_STATE array
+
+get_state gets the last position and orientation of the turtle saved
+
+remove_state removes the last position and orientation of the turtle
+
+The 'F' character in the command calculates the ending position of the
+turtle depending on the distance of each step and the angle. A line is
+drawn between the starting end ending positions, using the algorithm
+already provided, in which the values are rounded to the nearest int value.
+
+The '+' character adds the angle to the current orientation of the turtle
+and '-' subtracts it.
+
+The '[' character calls add_state with the function expressed earlier.
+
+The ']' character replaces the current position and orientation with
+the last state saved and removes it.
+
+*********************************************
+
+At the end, "Drawing done" is printed.
+
+2.3: SAVE
+The name of the file which is supposed to be saved is read and the ppm
+is created.
+
+The signature is written into the document, followed by the dimensions
+which are transformed back to ascii representations.
+Following, the channel max value is also written (255).
+
+The colors in the 2d int array are transformed back to rgb values and written
+in order.
+
+The message printed in the end signifies the success of the command.
+
+
+
+TASK 3: "FONT"
+
+
+The third task asks us to integrate two commands: FONT and TYPE.
+
+3.1: FONT
+
+Unlike the other functions, I also made font allocate all the arrays
+since each font requires a different amount of memory.
+
+It first verifies if the font file exits then it scans the font's name.
+As the name isn't limited to a specific number of letters and symbols,
+it is scanned character by character and the array is reallocated in
+case it doesn't fit in the initial size.
+
+The next process is to get all the other usefull data in the font,
+done by using "scan_and_alloc_char_info". The function scans all the words
+until it gets to "CHARS", where the number of characters in the font
+is located.
+
+"allocate_font" is dependend on the number of characters in the font
+and that is why the allocation takes part inside the function as opposed
+to in main.
+
+The useless data (such as the the names for the type of data) is scanned
+separately into the "useless_info" array.
+
+The bitmap in the FONT struct is a character 2d array, as the task requires
+me to read only values in the ascii table (it could be easily changed to an int
+array for an extended number of symbols). While it may be disguised as a
+2d array, it is actually a "compressed" 3d one. On every line sits the bitmap
+for a specific character. The actual bitmap is stored like a computer would
+do it in memory, by making every row sit next to the other.
+
+It may seem like an unnecessary step which may as well be, but it is
+easier to comprehend than allocating and free'ing a 3d array.
+(I already done so in a laboratory, which is exactly why I don't want
+to make it here).
+
+"scan_hex_to_char" gets the hex values and transforms them into ints that
+are in turn returned as character values.
+
+After it reads all the useful data, the succes message is printed and
+the font is marked as loaded.
+
+3.2: TYPE
+
+The "type" function is a bit special to me as I've managed to make every
+letter be in almost all orientations and positions possible before
+getting them right.
+
+As usual, "type" scans all the command parameters and checks for
+the font and image to be loaded.
+
+It then searches for the location the letter is stored in the font,
+writes it on the image, and increments the positions according to the
+ones specified in the file.
+
+The "write_char" calculates the row size of the bitmap, and then gets
+each char stored in it. For each char, the value of the bits is extracted
+and colored on the image, only if the value is 1 and the pixel is in bounds.
+
+If the operation succeeds, the message is printed.
+
+
+
+TASK 4: "GRAVURA"
+
+
+Task 4 introduces us to a single command: BITCHECK
+
+4.1: BITCHECK
+
+Bitcheck operates in a quite simple matter: it gets each int representing
+a color from the array pixels, then gets every group of 4 bits, a group
+which I gave the name halfbyte, since it literally has half of the bits
+from the byte.
+
+Then the halfbyte is compared with the values 13 and 2 (represented in
+binary as 1101 and 0010). If it is equal to one of them, the warning is
+printed.
+
+After the first pixel, the last 3 bits are stored as a remainder and get
+placed right in front of the next color's bits. Since each color is
+stored using only 3 bytes of the int, placing the bits in front does
+not affect the color of the pixel.
+
+There is a special case where the remainder and the next bit from
+the colors forms one of the expected sequences, in which case the warning
+is displayed for the last pixel since that is where the "special bit"
+is located.
+
+
+
+UNDO and REDO
+
+
+In each undoable function there will be the "last_cmd" function.
+"last_cmd" both stores characters representing letters for each
+undoable command (such as 'F' for FONT and 'L' for LSYSTEM),
+this also including both UNDO and REDO commands.
+
+It has a static character pointer, for which memory is allocated
+at the start of main using the action 'a'. The memory is reallocated
+in case there are more commands than the size, and free'd at the end of
+program using the action 'f'.
+
+The '?' action makes the function return the last command.
+
+The '-' action makes the function return the last undoable command.
+This means that if a command is already undo-ed, it will skip it.
+
+On the other hand, the '+' action makes the function return the last
+redoable command.
+
+Both '-' and '+' action make use of the fact that the UNDO and REDO
+functions are part of the stack and, depending on them, the stack
+is potentially searched further back.
+
+Any other character that is passed in the function is saved on the stack.
+
+
+Similar to "last_cmd" function, there are "lsys_file_location_stack",
+"font_file_location_stack" and "ppm_file_location_stack".
+
+All of them are allocated and free'd at the start and end of main
+respectively, using 'a' and 'f' as parameters.
+
+They are used to store the state of the program, marked by the action 's'.
+While "ppm_file_location_stack" stores all the data of the image,
+the other two just save the location of the file, which can be used
+by the LSYSTEM and FONT functions to load the files again in the program,
+thus saving some memory.
+
+Depending on the "last_cmd" function, the "undo" and "redo" functions call
+the stack functions with either 'u' for undo and 'r' for redo. That causes
+the counter, a static int in the functions, to move upwards or downwards
+in the stack.
+
+In "lsys_file_location_stack" and "font_file_location_stack"
+the file locations of the loaded structs are changed. The LSYSTEM and
+FONT functions are called again, causing them to be loaded. For the undo
+function, they are called with the mode 'u', which causes them to not
+display messages.
+
+"ppm_file_location_stack" is a bit more complicated. This function also
+needs to keep track the range where the images are stored, so they can
+all be free'd in the end. Depending on the action, the image is copied
+into the stack or from the stack.
+
+"copy_ppm", besides from just copying the data, can both free and
+allocate a new pixel 2d array if needed, since the images can
+have different dimensions or not be allocated in the first place,
+such as in a failed loading.
+
+"redo" checks the conditions for each of the functions
+that modify the image using "ppm_file_location_stack", and displays
+the failure or the success message of the commands.
+
+
+I think this covers anything that the code does, if there are any
+suggestions please leave them in the review, I want to know what I
+could've done better in this Readme specifically.
+(like personal opinions that would normally not make it
+in the review since they would not add or subtract points).
+Thank you for your time!
