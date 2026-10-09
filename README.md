@@ -81,55 +81,6 @@ A typical implementation maintains a history of operations or states so that cha
 
 Undo/redo mechanisms are useful in graphics editors, drawing applications, text editors, and other interactive software.
 
-## Concepts Explored
-
-This project brings together several fundamental programming concepts:
-
-| Concept | Purpose |
-|---|---|
-| String rewriting | Generate patterns using L-system rules |
-| Recursive or iterative algorithms | Produce increasingly complex structures |
-| Turtle graphics | Interpret instructions as drawing operations |
-| Raster graphics | Represent drawings as pixels |
-| PPM image format | Store and export image data |
-| Font rendering | Convert characters into visual representations |
-| State management | Track changes to program state |
-| Undo/redo | Reverse and restore previous operations |
-
-## Getting Started
-
-Clone the repository:
-
-```bash
-git clone https://github.com/Savandrei/L-System-Turtle-Graphics-PPM-Font-Undo-Redo.git
-cd L-System-Turtle-Graphics-PPM-Font-Undo-Redo
-```
-
-### Building and Running
-
-The exact build and execution commands depend on the project's source files and build configuration.
-
-Consult the repository for the appropriate compiler, dependencies, and entry point.
-
-## Learning Objectives
-
-The project explores how individual programming techniques can be combined into a larger graphics-oriented application.
-
-Its learning objectives include:
-
-- Understanding how formal grammars can generate complex patterns.
-- Translating abstract instructions into graphical output.
-- Exploring the relationship between algorithms and visual results.
-- Understanding how raster images store color information.
-- Implementing character rendering.
-- Managing application state and operation history.
-- Combining multiple programming concepts into a cohesive project.
-
-## Author
-
-**Savandrei**
-
-GitHub: [@Savandrei](https://github.com/Savandrei)
 
 ## Repository
 
