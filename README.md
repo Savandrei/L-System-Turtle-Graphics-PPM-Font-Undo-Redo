@@ -81,7 +81,3 @@ A typical implementation maintains a history of operations or states so that cha
 
 Undo/redo mechanisms are useful in graphics editors, drawing applications, text editors, and other interactive software.
 
-
-## Repository
-
-[L-System-Turtle-Graphics-PPM-Font-Undo-Redo](https://github.com/Savandrei/L-System-Turtle-Graphics-PPM-Font-Undo-Redo)
